@@ -8,6 +8,8 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import authRoutes from "./routes/auth.js";
+import {register} from "./controllers/auth.js";
 
 /* CONFIGURATIONS */
 // MIDDLEWARE is functions that run in between different requests/things
@@ -35,8 +37,14 @@ const storage = multer.diskStorage({
     cb(null, file.originalname);
   }
 });
-
 const upload = multer({ storage });
+
+/* ROUTES WITH FILES */
+// here upload.single() is the middleware because this is a function that runs before main function which is register.
+app.post("/auth/register", upload.single("picture"), register);
+
+/* ROUTES*/
+app.use("/auth", authRoutes);
 
 /* MONGOOSE SETUP*/
 const PORT = process.env.PORT || 6001;
